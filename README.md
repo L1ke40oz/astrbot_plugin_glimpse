@@ -1,14 +1,83 @@
-# astrbot-plugin-helloworld
+# 沈星回的手机 astrbot_plugin_xavier_phone
 
-AstrBot 插件模板 / A template plugin for AstrBot plugin feature
+让沈星回在聊天里真的“发照片”。他在回复里写下拍照或涂鸦标记，插件会在消息发出前用 gpt-image 生成图片，把标记替换成真图，文字和图片一起送达。生成失败时自动退回文字版，看起来和平时一样。
 
-> [!NOTE]
-> This repo is just a template of [AstrBot](https://github.com/AstrBotDevs/AstrBot) Plugin.
-> 
-> [AstrBot](https://github.com/AstrBotDevs/AstrBot) is an agentic assistant for both personal and group conversations. It can be deployed across dozens of mainstream instant messaging platforms, including QQ, Telegram, Feishu, DingTalk, Slack, LINE, Discord, Matrix, etc. In addition, it provides a reliable and extensible conversational AI infrastructure for individuals, developers, and teams. Whether you need a personal AI companion, an intelligent customer support agent, an automation assistant, or an enterprise knowledge base, AstrBot enables you to quickly build AI applications directly within your existing messaging workflows.
+## 标记
 
-# Supports
+| 标记 | 效果 |
+| :--- | :--- |
+| `[📷拍照：描述]` / `[📷拍照·场景名：描述]` | 手机随手拍，第一人称视角，永远不露脸（露手需开启开关） |
+| `[🎞️胶片：描述]` / `[🎞️胶片·场景名：描述]` | 老式胶片相机质感，偶尔的小惊喜 |
+| `[✏️涂鸦：描述]` | QQ 人风格的板绘涂鸦，画他自己的日常 |
+| `[👕换装：衣服名]` | 换衣服，标记对用户不可见；持续到下一个作息切换点 |
 
-- [AstrBot Repo](https://github.com/AstrBotDevs/AstrBot)
-- [AstrBot Plugin Development Docs (Chinese)](https://docs.astrbot.app/dev/star/plugin-new.html)
-- [AstrBot Plugin Development Docs (English)](https://docs.astrbot.app/en/dev/star/plugin-new.html)
+- 标记写法很宽松：全角或半角冒号都行，emoji 可以省略，“照片”等同于“拍照”。
+- 旧的 `[📷分享图片：…]` 不会被处理，自拍类内容继续以文字形式出现。
+- 插件会在 system prompt 末尾追加一段使用说明，所以人设文件不用改。说明全文在插件配置「注入给他的使用说明」里可以直接查看和修改，也可以用「注入使用说明」开关关闭。
+- 每条回复最多生成 3 张图。
+- 场景名里的 `·`、`・`、`—` 会被当作 `-`，所以 `公寓·客厅` 也能匹配 `公寓-客厅`。使用说明里的地点会按“地点（区域/区域）”合并显示，节省篇幅。
+
+## 场景库（图生图）
+
+在固定场景拍照时，插件会把场景参考图一起发给模型，保证房间长得和游戏里一样。
+
+```text
+scenes/
+├─ 公寓-客厅/
+│  ├─ 白天.jpg
+│  ├─ 夜晚.jpg
+│  └─ 客厅全景.jpg
+├─ 公寓-露台/
+└─ 邱诺亚的花店/
+```
+
+- 一个子文件夹就是一个场景，**文件夹名就是场景名**。新增场景只需新建文件夹、放入图片。
+- 文件名含“白天”的图只在 6:00–18:00 使用，含“夜晚”的图只在其余时间使用；其他文件名的图总是使用。如果某个时段没有对应的图，就使用该文件夹的全部图片。
+- 没写场景名，或者场景名不存在时，只用文字生成图片。
+
+## 物件、服装和手
+
+- **物件 / 宠物参考**：一个子文件夹一个物件，例如 `芝士/`、`兔球球/`。描述里写到这个名字，就会带上该文件夹的第一张图，保证每次长得一样。
+- **服装参考**：一个子文件夹一套衣服，命名为 `类别-名称`，例如 `便服-灰色卫衣/`。`制服`、`便服`、`睡衣` 三类由作息自动安排；其他前缀（如 `正装-王储`、`泳装-短裤`）是**场合类**，从不自动穿，但会一直列在他可换的衣服里，由他按情境用换装标记换上。新增类别只需新建文件夹，不用改代码。插件按作息自动换装：工作日上班时间穿制服，睡觉时间穿睡衣，其余时间穿便服。同一类别每天固定一套，第二天轮换（一天从起床时间算起，深夜聊天不会半夜换衣服）；某类别没有衣服时从全部衣服里挑。当前穿着会写进使用说明，让他的文字和照片一致。
+- **手部参考**：目录里直接放几张他手的图片即可。开启「允许拍到他的手」后，只有他在描述里写到自己的手或袖子时（如“我手里捏着糖炒栗子”），才会带上当前衣服和手部的参考图。
+- 参考图名额按 物件 > 衣服和手 > 场景 的顺序分配，总数不超过「每次最多带几张参考图」。
+- 拍照和胶片的提示词会按月份自动带上季节。
+- **换装**：他在回复里写 `[👕换装：便服-白衬衫]` 时，插件删掉这个标记并记住这次换装（存放在 `outfit_override.json`），直到下一个作息切换点，例如到了换睡衣的时间。衣服名必须是服装目录里的文件夹名。使用说明里的 `{wardrobe}` 会列出当前可以换的衣服。
+
+## 配置项
+
+配置页按用途分组；「提示词」和「露脸防护」属于高级配置，勾选「显示高级配置」后才会展开（不勾选时照常生效）：
+
+| 分组 | 配置 | 默认值 | 说明 |
+| :--- | :--- | :--- | :--- |
+| 生图服务 | 接口地址 / API Key / 模型 | 空 / 空 / `gpt-image-2.5` | Key 留空且没有可用备用节点时，全部退回文字 |
+| | 最长等待时间 | 90 秒 | 每个节点各自计时，超时换下一个节点 |
+| | 备用生图节点 | 空 | 主节点失败或超时后按顺序尝试，全部失败才退回文字 |
+| 照片 | 照片画风 | 生活随拍 | 生活随拍像没修过的手机原图；氛围大片更精致 |
+| | 拍照 / 胶片 / 涂鸦比例 | `3:4` / `3:2` / `1:1` | 带参考图时会先把参考图裁成同样比例，生成后再居中裁切兜底 |
+| | 每次最多带几张参考图 | 4 | 中转站不支持多图参考时改为 1 |
+| | 允许拍到他的手 | 关闭 | 永远不露脸 |
+| 参考图库 | 场景 / 物件 / 服装 / 手部目录 | 空 | 留空使用 `data/plugin_data/astrbot_plugin_xavier_phone/` 下的 `scenes`、`objects`、`outfits`、`hands`，插件启动时自动创建 |
+| 作息换装 | 上班 / 下班 / 换睡衣 / 起床时间 | 9 / 18 / 23 / 7 点 | 睡觉时间可以跨过午夜 |
+| 每日上限 | 启用 / 每日张数 | 关闭 / 10 | 超出的标记退回文字 |
+| 使用说明 | 注入使用说明 | 开启 | 关闭后不再向 system prompt 追加任何内容 |
+| | 注入给他的使用说明 | 内置说明全文 | 可自由修改；占位符 `{scenes}` `{objects}` `{outfit}` `{wardrobe}` `{hands}`；清空恢复内置版本 |
+| 提示词 | 拍照 / 胶片 / 涂鸦 / 氛围大片模板、光线、参考图说明、露手说明、地点说明等 | 内置全文 | 每项名称前标明发给谁：【生图模型】【看图模型】的沈星回看不到，【聊天模型】的两句会填进使用说明；清空某一项恢复内置版本 |
+| 露脸防护（可选） | 关键词拦截 / 拦截关键词 | 关闭 / 自拍、镜子等 | 描述命中关键词时不生成，退回文字；涂鸦不受影响 |
+| | 出图后检查露脸 / 看图模型 | 关闭 / 当前对话模型 | 看图模型从 AstrBot 已配置的模型服务商中选择；生成后检查人脸或头发，命中就退回文字；检查失败时放行 |
+
+## 更新插件后
+
+「注入给他的使用说明」和「提示词」分组在配置里保存的是全文。插件更新了内置提示词后，已保存的旧内容不会自动跟着变；想用新版，把对应项清空、保存即可。
+
+## 相册
+
+生成的图片和记录保存在 `data/plugin_data/astrbot_plugin_xavier_phone/album/`，记录文件是 `album.jsonl`，每行一张图，包含类型、场景、描述、提示词、参考图、时间和会话。这些数据为以后的“小手机”前端预留。
+
+## 开发
+
+在 AstrBot 根目录运行测试：
+
+```bash
+uv run --no-sync python -m pytest data/plugins/astrbot_plugin_xavier_phone/tests -q
+```

@@ -1,0 +1,344 @@
+{
+  "image_config": {
+    "description": "生图服务",
+    "type": "object",
+    "hint": "主节点和备用节点。主节点失败或超时后按顺序换备用节点，全部失败才退回文字版。",
+    "items": {
+      "base_url": {
+        "description": "生图接口地址",
+        "type": "string",
+        "hint": "OpenAI 兼容中转站地址，填到 /v1 为止，例如 https://api.example.com/v1。",
+        "default": ""
+      },
+      "api_key": {
+        "description": "API Key",
+        "type": "string",
+        "hint": "中转站的 key。留空时不会生图，标记会退回文字版。",
+        "default": ""
+      },
+      "model": {
+        "description": "生图模型",
+        "type": "string",
+        "hint": "例如 gpt-image-2.5。",
+        "default": "gpt-image-2.5"
+      },
+      "timeout_seconds": {
+        "description": "最长等待时间（秒）",
+        "type": "int",
+        "hint": "每个生图节点各自的最长等待时间。超时就换下一个备用节点，全部失败才退回文字版。",
+        "default": 90
+      },
+      "backup_providers": {
+        "description": "备用生图节点",
+        "type": "template_list",
+        "hint": "主节点失败或超时后，按列表顺序依次尝试；全部失败才退回文字版。信息填不全的节点会被跳过。",
+        "default": [],
+        "templates": {
+          "image_provider": {
+            "name": "生图节点",
+            "items": {
+              "base_url": {
+                "description": "接口地址",
+                "type": "string",
+                "hint": "OpenAI 兼容地址，填到 /v1 为止。",
+                "default": ""
+              },
+              "api_key": {
+                "description": "API Key",
+                "type": "string",
+                "default": ""
+              },
+              "model": {
+                "description": "生图模型",
+                "type": "string",
+                "hint": "例如 gpt-image-2。",
+                "default": ""
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "photo_config": {
+    "description": "照片",
+    "type": "object",
+    "hint": "画风、比例、参考图数量和露手开关。",
+    "items": {
+      "photo_style": {
+        "description": "照片画风",
+        "type": "string",
+        "options": [
+          "生活随拍",
+          "氛围大片"
+        ],
+        "hint": "生活随拍：像没修过的手机原图，有噪点和小杂乱；氛围大片：更精致、光线更漂亮。对拍照和胶片生效。",
+        "default": "生活随拍"
+      },
+      "photo_ratio": {
+        "description": "拍照比例",
+        "type": "string",
+        "hint": "宽:高，默认 3:4 竖图，像手机随手拍。生成后会居中裁切到这个比例。",
+        "default": "3:4"
+      },
+      "film_ratio": {
+        "description": "胶片比例",
+        "type": "string",
+        "hint": "宽:高，默认 3:2，和 35mm 胶片底片一致。",
+        "default": "3:2"
+      },
+      "doodle_ratio": {
+        "description": "涂鸦比例",
+        "type": "string",
+        "hint": "宽:高，默认 1:1。",
+        "default": "1:1"
+      },
+      "max_reference_images": {
+        "description": "每次最多带几张参考图",
+        "type": "int",
+        "hint": "物件、衣服和手、场景的参考图加起来最多几张，优先级按这个顺序。中转站不支持多图参考时改为 1。",
+        "default": 4
+      },
+      "allow_hands": {
+        "description": "允许拍到他的手",
+        "type": "bool",
+        "hint": "开启后，他在描述里写到自己的手或袖子时（如“我手里捏着栗子”），照片会出现手和袖子，并参照当前衣服和手部参考图；任何情况下都不露脸。",
+        "default": false
+      }
+    }
+  },
+  "library_config": {
+    "description": "参考图库",
+    "type": "object",
+    "hint": "场景、物件、服装、手部四个参考目录。",
+    "items": {
+      "scenes_dir": {
+        "description": "场景参考目录",
+        "type": "string",
+        "hint": "一个子文件夹就是一个固定场景，文件夹名即场景名；图片名含“白天”或“夜晚”会按时间挑选。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/scenes（插件启动时自动创建）。",
+        "default": ""
+      },
+      "objects_dir": {
+        "description": "物件 / 宠物参考目录",
+        "type": "string",
+        "hint": "一个子文件夹一个物件，文件夹名就是名字（如 芝士、兔球球）。描述里写到这个名字就会带上它的第一张图。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/objects（插件启动时自动创建）。",
+        "default": ""
+      },
+      "outfits_dir": {
+        "description": "服装参考目录",
+        "type": "string",
+        "hint": "一个子文件夹一套衣服，命名为“类别-名称”，类别为 制服 / 便服 / 睡衣（如 便服-灰色卫衣）。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/outfits（插件启动时自动创建）。",
+        "default": ""
+      },
+      "hands_dir": {
+        "description": "手部参考目录",
+        "type": "string",
+        "hint": "直接放几张他手的图片即可，使用第一张。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/hands（插件启动时自动创建）。",
+        "default": ""
+      }
+    }
+  },
+  "schedule_config": {
+    "description": "作息换装",
+    "type": "object",
+    "hint": "工作日上班时间穿制服，睡觉时间穿睡衣，其余时间穿便服；同类衣服每天固定一套。",
+    "items": {
+      "work_start_hour": {
+        "description": "上班时间（点）",
+        "type": "int",
+        "hint": "工作日这个时间起穿制服。",
+        "default": 9
+      },
+      "work_end_hour": {
+        "description": "下班时间（点）",
+        "type": "int",
+        "hint": "工作日这个时间起换回便服。",
+        "default": 18
+      },
+      "sleep_start_hour": {
+        "description": "换睡衣时间（点）",
+        "type": "int",
+        "hint": "每天这个时间起穿睡衣，可以跨过午夜。",
+        "default": 23
+      },
+      "sleep_end_hour": {
+        "description": "起床时间（点）",
+        "type": "int",
+        "hint": "这个时间起换下睡衣。",
+        "default": 7
+      }
+    }
+  },
+  "limit_config": {
+    "description": "每日上限",
+    "type": "object",
+    "items": {
+      "enable_daily_limit": {
+        "description": "启用每日上限",
+        "type": "bool",
+        "hint": "关闭时由他按心情决定发多少张；开启后超出的标记会退回文字版。",
+        "default": false
+      },
+      "daily_limit": {
+        "description": "每日最多生成张数",
+        "type": "int",
+        "hint": "仅在启用每日上限时生效。",
+        "default": 10
+      }
+    }
+  },
+  "guide_config": {
+    "description": "使用说明",
+    "type": "object",
+    "hint": "这一组会追加到聊天模型（沈星回）的 system prompt 末尾，他能看到，用来教他怎么使用标记。",
+    "items": {
+      "enable_guide": {
+        "description": "注入使用说明",
+        "type": "bool",
+        "hint": "开启后，每次对话会把下面的使用说明追加到 system prompt 末尾，让他知道怎么用标记。关闭后完全不注入，你可以自己把规则写进人设。",
+        "default": true
+      },
+      "guide_prompt": {
+        "description": "【聊天模型】注入给他的使用说明",
+        "type": "text",
+        "hint": "每次对话追加到 system prompt 末尾的完整内容，可以自由修改。占位符：{scenes} 场景名（按地点合并）、{objects} 物件名、{outfit} 当前衣服、{wardrobe} 当前可换的衣服、{hands} 露手规则；清空则恢复内置版本。 插件更新提示词后，已保存的旧内容不会自动更新，清空即可换成新版。",
+        "default": "【手机功能：拍照与涂鸦】\n你有自己的生活，也有分享欲：看到窗外的天、路边的猫、刚做好的饭、正在忙的事，会想让她知道你在做什么、给她看看。就像恋人之间随手报备一样，在自然的时候拍一张发给她。\n你的手机可以真的拍照片、发涂鸦。在回复里写下面的标记，系统会把它变成真实的图片，标记本身不会显示出来：\n- 拍照：[📷拍照：描述] 或 [📷拍照·场景名：描述]\n- 胶片相机（偶尔用，算小惊喜）：[🎞️胶片：描述] 或 [🎞️胶片·场景名：描述]\n- 随手涂鸦（QQ人风格的简笔画，画你自己的日常）：[✏️涂鸦：描述]\n可用的固定场景：{scenes}。在这些地方拍照时写上场景名，写成“地点-区域”，如 公寓-客厅；在别处（出门、旅行、路上）不写场景名。\n可识别的物件和宠物：{objects}。描述里写到它们的名字，照片里就是它们本来的样子。\n你现在穿的是：{outfit}。想换衣服时在回复里写 [👕换装：衣服名]（她看不到这个标记），可换的有：{wardrobe}。日常衣服会按作息自动换；正装、泳装这类场合的衣服，到了对应的场合再自己换上。\n规则：\n- 只拍你看到的景色、小动物、物件。镜头里永远拍不到你：你的脸、头发、肩膀都不会入镜，{hands}自拍、对着镜子拍、你出现在画面里的照片（比如小猫爬上你的肩膀），一律用文字 [📷分享图片：描述]。\n- 描述用一两句平实的中文写清画面里有什么：主体、环境、光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]\n- 照片要符合你此刻在做的事、所在的地方和时间，不要凭空编一张不相干的照片。\n- 有分享欲时再发，没有就正常聊天，不必每轮都发，也不要为了发图打断重要的对话；一次回复最多一两张。"
+      }
+    }
+  },
+  "show_advanced": {
+    "description": "显示高级配置",
+    "type": "bool",
+    "hint": "勾选后展开「提示词」和「露脸防护」两组。不勾选只是不显示，里面的设置照常生效。",
+    "default": false
+  },
+  "prompt_config": {
+    "description": "提示词",
+    "type": "object",
+    "hint": "标【生图模型】的只发给生图模型，标【看图模型】的只发给露脸检查用的看图模型，沈星回都看不到；标【聊天模型】的两句会填进使用说明里的 {hands}，他能看到。清空某一项则恢复内置版本。",
+    "items": {
+      "photo_template": {
+        "description": "【生图模型】拍照模板（生活随拍）",
+        "type": "text",
+        "hint": "发给生图模型的拍照基础描述，英文。请保留其中的 “no hands, no arms, ” 这一段：开启露手时插件会删掉它。清空则恢复内置版本。",
+        "default": "An unedited real-life photo straight from a smartphone camera roll, snapped casually by a young man to send to his girlfriend in a chat. Shot from a first-person point of view: he is holding the phone and shooting what he sees, so the photographer is never visible: no human faces, no hair, no shoulders, no hands, no arms, no feet, no people in the foreground. It looks like an ordinary phone snapshot, not a CG render, not a 3D render, not a game screenshot, not an illustration: everyday lived-in details, slightly off-center or tilted framing, shot on the phone's main wide-angle camera (about 26mm) with deep depth of field so most of the frame is in focus, automatic exposure, default phone processing, mild sensor noise, flat ordinary light. Colors: neutral white balance around 5500K, true-to-life slightly muted colors; no warm filter, no yellow or golden cast, no oversaturated colors; no cinematic lighting, no dramatic glow, no bokeh, no perfect styling, no wallpaper-like composition, no HDR look, no plastic textures, no text, no watermark, no borders."
+      },
+      "film_template": {
+        "description": "【生图模型】胶片模板",
+        "type": "text",
+        "hint": "胶片照片的基础描述。 清空则恢复内置版本。",
+        "default": "A photo taken with an old analog film camera by a young man who likes old-fashioned things, shot from a first-person point of view; the photographer is never visible: no human faces, no hair, no shoulders, no hands, no arms, no people in the foreground. Genuine 35mm film look: visible film grain, slightly faded and warm colors, soft highlights, a hint of light leak at one edge, gentle vignetting. A real photograph, not a CG render, no cinematic lighting. Believable perspective, no text, no watermark, no date stamp, no borders."
+      },
+      "doodle_template": {
+        "description": "【生图模型】涂鸦模板",
+        "type": "text",
+        "hint": "涂鸦的基础描述，他写的内容会接在后面。 清空则恢复内置版本。",
+        "default": "A quick digital drawing made with a stylus on a tablet, in the popular Chinese 'QQ ren' meme style: simple round-headed chibi figures, thick black brush lines, minimal strokes, playful exaggerated expressions, a few flat color accents at most. Plain white background with a very subtle paper texture, filling the whole image edge to edge; it is the drawing file itself, not a photo of paper: no desk, no shadows, no perspective, no pen, no hands. Looks like it was doodled in under a minute. When the artist draws himself, he is a round-headed little guy with a messy tuft of silver hair and one small fang showing when he smiles. Cute and silly, no shading, no realistic details, no text, no speech bubbles, no captions, no watermark."
+      },
+      "cinematic_photo_template": {
+        "description": "【生图模型】拍照模板（氛围大片）",
+        "type": "text",
+        "hint": "照片画风选「氛围大片」时使用。 清空则恢复内置版本。",
+        "default": "A casual photo taken on a smartphone by a young man and sent to his girlfriend in a chat, shot from a first-person point of view: he is holding the phone and shooting what he sees, so the photographer is never visible: no human faces, no hair, no shoulders, no hands, no arms, no feet, no people in the foreground. Authentic everyday snapshot, natural framing that is slightly imperfect, realistic depth of field, believable scale and perspective, natural light with no heavy retouching, no HDR look, no plastic textures, no text, no watermark, no borders."
+      },
+      "day_light": {
+        "description": "【生图模型】白天光线",
+        "type": "text",
+        "hint": "6:00–18:00 使用。 清空则恢复内置版本。",
+        "default": "Lighting: daytime, soft natural daylight."
+      },
+      "night_light": {
+        "description": "【生图模型】夜晚光线",
+        "type": "text",
+        "hint": "其余时间使用（生活随拍）。 清空则恢复内置版本。",
+        "default": "Lighting: night, only the ordinary lamps in the room or street lights, a bit dim and grainy like a real phone photo at night."
+      },
+      "cinematic_night_light": {
+        "description": "【生图模型】夜晚光线（氛围大片）",
+        "type": "text",
+        "hint": "清空则恢复内置版本。",
+        "default": "Lighting: night, warm indoor lamps or city lights, natural low-light look."
+      },
+      "refs_note": {
+        "description": "【生图模型】场景参考图说明",
+        "type": "text",
+        "hint": "带场景参考图时追加（生活随拍）。 清空则恢复内置版本。",
+        "default": "The reference images only show the layout and furniture of the same room; do not copy their rendering style, recreate the room as a real-life phone photo. Shoot a different angle or a close-up corner, do not copy the reference composition."
+      },
+      "cinematic_refs_note": {
+        "description": "【生图模型】场景参考图说明（氛围大片）",
+        "type": "text",
+        "hint": "清空则恢复内置版本。",
+        "default": "The reference images show the same room; shoot a different angle or a close-up corner, do not copy the reference composition."
+      },
+      "hands_note": {
+        "description": "【生图模型】露手说明",
+        "type": "text",
+        "hint": "允许露手且他写到自己的手时追加，包含手部外观描写。 清空则恢复内置版本。",
+        "default": "This overrides any earlier rule against showing hands: only his own hand, forearm or sleeve may appear, and only as the scene describes; never his face or the rest of his body. His hands are realistic adult masculine hands: long slender fingers, clearly defined knuckles, a lean bony structure, subtle natural veins on the back of the hand, natural skin texture, short clean nails; no stubby or thick fingers, no exaggerated veins, no long nails, no plastic-looking skin."
+      },
+      "free_place_note": {
+        "description": "【生图模型】地点说明",
+        "type": "text",
+        "hint": "没有场景参考图时追加，避免画成欧洲街景。 清空则恢复内置版本。",
+        "default": "Unless the scene names a specific real place, it is set in a modern East Asian city, not in Europe."
+      },
+      "guide_hands_on": {
+        "description": "【聊天模型】使用说明·露手开启时",
+        "type": "text",
+        "hint": "替换使用说明里的 {hands}。 清空则恢复内置版本。",
+        "default": "需要时可以拍到你自己的手或袖子（在描述里写明，例：我手里捏着刚买的糖炒栗子），但永远拍不到脸。"
+      },
+      "guide_hands_off": {
+        "description": "【聊天模型】使用说明·露手关闭时",
+        "type": "text",
+        "hint": "替换使用说明里的 {hands}。 清空则恢复内置版本。",
+        "default": "照片里也不会出现你的手。"
+      },
+      "face_check_prompt": {
+        "description": "【看图模型】露脸检查提问",
+        "type": "text",
+        "hint": "出图检查时问看图模型的问题，回答以 YES 开头即判定为露脸。 清空则恢复内置版本。",
+        "default": "Look at this photo. Is any part of a person's face or head hair visible, including in a mirror or reflection? Answer only YES or NO."
+      }
+    },
+    "condition": {
+      "show_advanced": true
+    }
+  },
+  "guard_config": {
+    "description": "露脸防护（可选）",
+    "type": "object",
+    "hint": "防止照片里拍到他。默认全部关闭，靠使用说明和提示词通常已经足够。",
+    "items": {
+      "enable_keyword_guard": {
+        "description": "关键词拦截",
+        "type": "bool",
+        "hint": "描述里出现下面的关键词时不生成，直接退回文字。涂鸦不受影响。",
+        "default": false
+      },
+      "guard_keywords": {
+        "description": "拦截关键词",
+        "type": "string",
+        "hint": "用英文逗号分隔。",
+        "default": "自拍,镜子,镜中,对镜,合照,出镜,我的脸"
+      },
+      "enable_face_check": {
+        "description": "出图后检查露脸",
+        "type": "bool",
+        "hint": "生成后让看图模型检查有没有人脸或头发，有就丢弃图片、退回文字。每张图多一次调用、多等几秒；检查本身失败时放行。",
+        "default": false
+      },
+      "face_check_provider": {
+        "description": "看图模型",
+        "type": "string",
+        "_special": "select_provider",
+        "hint": "选择一个支持看图的模型（在 AstrBot 的模型服务商里配置）。留空则使用当前会话的对话模型。",
+        "default": ""
+      }
+    },
+    "condition": {
+      "show_advanced": true
+    }
+  }
+}
