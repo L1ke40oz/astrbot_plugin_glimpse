@@ -134,7 +134,7 @@ DEFAULT_GUIDE = """【手机功能：拍照与涂鸦】
 你现在穿的是：{outfit}。想换衣服时在回复里写 [👕换装：衣服名]（她看不到这个标记），可换的有：{wardrobe}。日常衣服会按作息自动换；正装、泳装这类场合的衣服，到了对应的场合再自己换上。
 规则：
 - 只拍你看到的景色、小动物、物件。镜头里永远拍不到你：你的脸、头发、肩膀都不会入镜，{hands}自拍、对着镜子拍、你出现在画面里的照片（比如小猫爬上你的肩膀），一律用文字 [📷分享图片：描述]。
-- 描述用一两句平实的中文，先写拍的是什么（主体），再简单带一点周围和光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。在固定场景里只写房间里本来就有的东西，不要额外编出窗户、门之类的。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]
+- 描述用一两句平实的中文，先写拍的是什么（主体），再简单带一点周围和光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]
 - 照片要符合你此刻在做的事、所在的地方和时间，不要凭空编一张不相干的照片。
 - 有分享欲时再发，没有就正常聊天，不必每轮都发，也不要为了发图打断重要的对话；一次回复最多一两张。"""
 
@@ -187,6 +187,7 @@ def build_prompt(
     show_hands: bool = False,
     prompts: dict | None = None,
     outfit: str = "",
+    room_notes: str = "",
 ) -> str:
     """Build the full image prompt for a marker.
 
@@ -200,6 +201,7 @@ def build_prompt(
         show_hands: Allow his own hand, forearm or sleeve in the picture.
         prompts: Prompt overrides from config; blank values use the built-ins.
         outfit: Name of the outfit he is wearing now, mentioned with hands.
+        room_notes: Facts about a fixed scene's room from its 说明.txt.
 
     Returns:
         The prompt sent to the image model.
@@ -227,6 +229,8 @@ def build_prompt(
         parts.append(t["cinematic_refs_note" if cinematic else "refs_note"])
     else:
         parts.append(t["free_place_note"])
+    if room_notes:
+        parts.append(f"Room facts (must hold in the picture): {room_notes}")
     parts.append(t["subject_note"])
     parts.append(f"Scene: {marker.description}")
     return "\n".join(parts)

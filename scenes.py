@@ -6,6 +6,8 @@ from pathlib import Path
 IMAGE_SUFFIXES = {".jpg", ".jpeg", ".png", ".webp"}
 TIME_TAGS = ("白天", "夜晚")
 SCHEDULED_CATEGORIES = ("制服", "便服", "睡衣")
+NOTES_FILE = "说明.txt"
+NOTES_MAX_CHARS = 300
 
 
 def folder_images(folder: Path) -> list[Path]:
@@ -63,6 +65,25 @@ def pick_refs(root: Path, scene: str, now: datetime, max_refs: int) -> list[Path
     matching = [p for p in images if tag in p.stem]
     untagged = [p for p in images if not any(t in p.stem for t in TIME_TAGS)]
     return (matching + untagged or images)[:max_refs]
+
+
+def scene_notes(root: Path, scene: str) -> str:
+    """Read the optional room facts written in a scene folder's 说明.txt.
+
+    Args:
+        root: Scene library directory.
+        scene: Scene folder name (must be a known scene).
+
+    Returns:
+        The stripped note, at most NOTES_MAX_CHARS characters; "" if absent.
+    """
+    if scene not in list_scenes(root):
+        return ""
+    try:
+        text = (root / scene / NOTES_FILE).read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeDecodeError):
+        return ""
+    return text[:NOTES_MAX_CHARS]
 
 
 def first_image(root: Path, name: str) -> Path | None:

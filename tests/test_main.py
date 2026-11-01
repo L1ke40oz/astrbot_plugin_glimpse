@@ -535,3 +535,14 @@ def test_advanced_groups_hidden_behind_toggle():
     for group in ("prompt_config", "guard_config"):
         assert SCHEMA[group]["condition"] == {"show_advanced": True}
     assert SCHEMA["guard_config"]["items"]["face_check_provider"]["_special"] == "select_provider"
+
+
+@pytest.mark.asyncio
+async def test_room_notes_sent_for_scene(make_plugin, make_event, calls, tmp_path):
+    write_lib(tmp_path / "scenes", ["公寓-厨房"])
+    (tmp_path / "scenes" / "公寓-厨房" / "说明.txt").write_text("没有窗户", encoding="utf-8")
+    plugin = make_plugin()
+    await plugin.render_markers(make_event("[📷拍照·公寓-厨房：锅里的面]"))
+    assert "没有窗户" in calls[-1]["prompt"]
+    await plugin.render_markers(make_event("[✏️涂鸦·公寓-厨房：做饭]"))
+    assert "没有窗户" not in calls[-1]["prompt"]

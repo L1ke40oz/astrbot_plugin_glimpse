@@ -10,6 +10,7 @@ from data.plugins.astrbot_plugin_glimpse.scenes import (
     outfit_category,
     pick_outfit,
     pick_refs,
+    scene_notes,
     wardrobe,
 )
 
@@ -175,3 +176,14 @@ def test_occasion_outfits_never_scheduled(tmp_path):
 def test_only_occasion_outfits_still_picks_something(tmp_path):
     root = make_dirs(tmp_path, ["正装-王储"])
     assert pick_outfit(root, datetime(2026, 10, 30, 20), WORK, SLEEP) == "正装-王储"
+
+
+def test_scene_notes(tmp_path):
+    root = make_dirs(tmp_path, ["公寓-厨房", "公寓-客厅"])
+    (root / "公寓-厨房" / "说明.txt").write_text("  开放式厨房，没有窗户。\n", encoding="utf-8")
+    assert scene_notes(root, "公寓-厨房") == "开放式厨房，没有窗户。"
+    assert scene_notes(root, "公寓-客厅") == ""
+    assert scene_notes(root, "不存在") == ""
+    assert scene_notes(root, "../公寓-厨房") == ""
+    (root / "公寓-客厅" / "说明.txt").write_text("长" * 500, encoding="utf-8")
+    assert len(scene_notes(root, "公寓-客厅")) == 300

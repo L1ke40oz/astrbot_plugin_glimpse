@@ -180,4 +180,11 @@ def test_scene_refs_lock_architecture():
 
 def test_guide_asks_subject_first():
     g = build_guide(DEFAULT_GUIDE, [], [], "", False)
-    assert "先写拍的是什么" in g and "不要额外编" in g
+    assert "先写拍的是什么" in g and "不要额外编" not in g
+
+
+def test_room_notes_in_prompt():
+    m = parse_markers("[📷拍照·公寓-厨房：猫]")[0]
+    p = build_prompt(m, [("scene", "公寓-厨房")], DAY, room_notes="没有窗户")
+    assert "Room facts" in p and "没有窗户" in p
+    assert "Room facts" not in build_prompt(m, [("scene", "公寓-厨房")], DAY)

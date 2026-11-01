@@ -28,6 +28,7 @@ from .scenes import (
     next_category_change,
     pick_outfit,
     pick_refs,
+    scene_notes,
     wardrobe,
 )
 
@@ -254,6 +255,9 @@ class Glimpse(Star):
                 show_hands,
                 self.config.get("prompt_config"),
                 outfit,
+                scene_notes(self.dirs["scenes"], marker.scene)
+                if marker.kind != "doodle"
+                else "",
             )
             # Each node gets its own timeout; the last error is raised if all fail.
             error: BaseException = RuntimeError("no image provider")
