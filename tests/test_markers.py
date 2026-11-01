@@ -1,4 +1,4 @@
-from data.plugins.astrbot_plugin_xavier_phone.markers import (
+from data.plugins.astrbot_plugin_glimpse.markers import (
     fallback_text,
     parse_markers,
     parse_outfit_changes,

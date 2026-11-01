@@ -7,7 +7,7 @@ import pytest_asyncio
 from aiohttp import web
 from aiohttp.test_utils import TestServer
 
-from data.plugins.astrbot_plugin_xavier_phone.image_client import generate_image
+from data.plugins.astrbot_plugin_glimpse.image_client import generate_image
 
 
 @dataclass

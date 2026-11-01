@@ -2,7 +2,7 @@
 
 日期：2026-11-01
 状态：已通过审查，待用户确认
-所属插件：astrbot_plugin_xavier_phone（同仓库，分支 feat/v0.1 之上继续开发）
+所属插件：astrbot_plugin_glimpse（同仓库，分支 feat/v0.1 之上继续开发）
 
 ## 1. 意图与动机
 

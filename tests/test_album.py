@@ -1,7 +1,7 @@
 import json
 from datetime import date
 
-from data.plugins.astrbot_plugin_xavier_phone.album import Album
+from data.plugins.astrbot_plugin_glimpse.album import Album
 
 
 def test_save_and_count(tmp_path):

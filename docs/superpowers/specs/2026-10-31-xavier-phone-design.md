@@ -1,8 +1,8 @@
-# 沈星回的手机（astrbot_plugin_xavier_phone）设计文档
+# 沈星回的手机（astrbot_plugin_glimpse）设计文档
 
 日期：2026-10-31
 状态：已通过审查，待用户最终确认
-仓库：https://github.com/L1ke40oz/astrbot_plugin_xavier_phone（本地位于 `data/plugins/astrbot_plugin_xavier_phone`，当前仍是 helloworld 模板，实现时要替换 `main.py`、`metadata.yaml`、`README.md`）
+仓库：https://github.com/L1ke40oz/astrbot_plugin_glimpse（本地位于 `data/plugins/astrbot_plugin_glimpse`，当前仍是 helloworld 模板，实现时要替换 `main.py`、`metadata.yaml`、`README.md`）
 
 ## 1. 意图与动机
 
@@ -48,7 +48,7 @@
 - 作用范围：这个 bot 只供用户和沈星回聊天使用，插件**对所有会话全局生效**，不按人设或会话做过滤；每日上限也按全局计数。
 - 生图服务：OpenAI 兼容中转站（地址由用户在配置中填写），模型 `gpt-image-2.5`（按次计费），走 OpenAI 兼容接口。该站基于 new-api 网关，`/images/edits` 是否支持一次传多张参考图无法从公开信息确认，**实现时必须实测**：如果不支持多图，场景库就改为每次只传一张，即按时间挑出的那一张；没有带时段的图时传文件夹里的第一张。文生图走 `POST {base_url}/images/generations`（JSON）；图生图走 `POST {base_url}/images/edits`（multipart，多张参考图用 `image[]`）。返回可能是 `b64_json` 或 `url`，两种都要处理。可参考 `astrbot_plugin_omnidraw/providers/openai_impl.py` 与 `providers/base.py` 的写法，但不要整套搬过来。
 - 项目规范（见 AstrBot `AGENTS.md`）：KISS，不加不必要的 helper；用 `pathlib.Path`；注释和日志用英文；docstring 用 Google 风格；用 `ruff format` / `ruff check`。
-- 插件数据目录：`data/plugin_data/astrbot_plugin_xavier_phone/`。AstrBot 中并没有 `path_utils` 模块，应使用 `astrbot.core.utils.astrbot_path.get_astrbot_plugin_data_path()` 或 `StarTools.get_data_dir()` 获取，不要硬编码。
+- 插件数据目录：`data/plugin_data/astrbot_plugin_glimpse/`。AstrBot 中并没有 `path_utils` 模块，应使用 `astrbot.core.utils.astrbot_path.get_astrbot_plugin_data_path()` 或 `StarTools.get_data_dir()` 获取，不要硬编码。
 - 分段回复只拆分长度不超过 `words_count_threshold` 的 `Plain`（用户当前设为 995），更长的文字会整段发出。按标记拆开 `Plain` 只会让片段变短，所以对分段没有坏处。
 - 模型调用其他工具时，每个中间 LLM 结果都会单独经过发送前钩子，所以“每条回复最多 3 个标记”按每次产出的消息计，而不是按整轮对话计。这一点可以接受。
 - 钩子内的异常会被 AstrBot 捕获并记录，回复仍会发出；但实现时要保证要么整条消息链都替换成功，要么都不改动，不能发出改了一半的消息链。

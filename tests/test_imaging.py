@@ -2,7 +2,7 @@ import io
 
 from PIL import Image
 
-from data.plugins.astrbot_plugin_xavier_phone.imaging import crop_to_ratio, size_for_ratio
+from data.plugins.astrbot_plugin_glimpse.imaging import crop_to_ratio, size_for_ratio
 
 
 def png(w, h):
@@ -52,7 +52,7 @@ def jpeg(img):
 
 
 def test_prepare_reference_jpeg_downscaled():
-    from data.plugins.astrbot_plugin_xavier_phone.imaging import prepare_reference
+    from data.plugins.astrbot_plugin_glimpse.imaging import prepare_reference
 
     out = prepare_reference(png(3000, 4000), "3:4")
     img = Image.open(io.BytesIO(out))
@@ -60,7 +60,7 @@ def test_prepare_reference_jpeg_downscaled():
 
 
 def test_prepare_reference_applies_exif_orientation():
-    from data.plugins.astrbot_plugin_xavier_phone.imaging import prepare_reference
+    from data.plugins.astrbot_plugin_glimpse.imaging import prepare_reference
 
     raw = Image.new("RGB", (400, 300), "white")  # stored landscape
     exif = raw.getexif()
@@ -71,7 +71,7 @@ def test_prepare_reference_applies_exif_orientation():
 
 
 def test_prepare_reference_handles_cmyk():
-    from data.plugins.astrbot_plugin_xavier_phone.imaging import prepare_reference
+    from data.plugins.astrbot_plugin_glimpse.imaging import prepare_reference
 
     buf = io.BytesIO()
     Image.new("CMYK", (300, 400)).save(buf, "JPEG")

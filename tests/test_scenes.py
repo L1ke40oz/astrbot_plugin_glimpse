@@ -2,7 +2,7 @@ from datetime import datetime
 
 import pytest
 
-from data.plugins.astrbot_plugin_xavier_phone.scenes import (
+from data.plugins.astrbot_plugin_glimpse.scenes import (
     first_image,
     list_scenes,
     match_objects,

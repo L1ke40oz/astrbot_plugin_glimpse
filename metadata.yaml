@@ -1,7 +1,7 @@
-name: astrbot_plugin_xavier_phone
-display_name: 沈星回的手机
-desc: 把沈星回聊天中的拍照、胶片、涂鸦标记变成真图。
+name: astrbot_plugin_glimpse
+display_name: 掠影 Glimpse
+desc: 让角色在聊天里分享照片、胶片和涂鸦：把回复里的标记变成真图。
 version: v0.1.0
 author: L1ke40oz
-repo: https://github.com/L1ke40oz/astrbot_plugin_xavier_phone
+repo: https://github.com/L1ke40oz/astrbot_plugin_glimpse
 astrbot_version: ">=4.16,<5"

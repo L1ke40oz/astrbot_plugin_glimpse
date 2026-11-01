@@ -12,8 +12,8 @@
 
 ## Global Constraints
 
-- 路径相对插件目录 `D:\Software\AstrBot-master\data\plugins\astrbot_plugin_xavier_phone`，分支 `feat/v0.1`。
-- 测试在 AstrBot 根目录运行：`uv run --no-sync python -m pytest data/plugins/astrbot_plugin_xavier_phone/tests -q -p no:warnings`；导入用 `data.plugins.astrbot_plugin_xavier_phone.<module>`；异步测试加 `@pytest.mark.asyncio`。
+- 路径相对插件目录 `D:\Software\AstrBot-master\data\plugins\astrbot_plugin_glimpse`，分支 `feat/v0.1`。
+- 测试在 AstrBot 根目录运行：`uv run --no-sync python -m pytest data/plugins/astrbot_plugin_glimpse/tests -q -p no:warnings`；导入用 `data.plugins.astrbot_plugin_glimpse.<module>`；异步测试加 `@pytest.mark.asyncio`。
 - 每个任务结束前在插件目录运行 `uv run --no-sync ruff format . && uv run --no-sync ruff check .` 并通过。
 - 提交信息使用 conventional commits，并以 `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` 结尾。
 - 不新增 Python 依赖；前端不引用任何 CDN。
@@ -235,7 +235,7 @@ def test_missing_file_thumbnail_none(lib):
 - Produces: `class PhoneServer`
   - `__init__(self, data_dir: Path, album: Album)`：创建 `AuthStore(data_dir / "webui" / "auth.json")`、`Library(album)`；设置文件为 `data_dir / "webui" / "settings.json"`，壁纸目录为 `data_dir / "webui" / "wallpapers"`。
   - `build_app(self) -> web.Application`
-  - `async start(self, host: str, port: int) -> None`：使用 `web.AppRunner` 和 `web.TCPSite`；设置码存在时打印日志 `[xavier_phone] Phone web UI setup code: 123456`。
+  - `async start(self, host: str, port: int) -> None`：使用 `web.AppRunner` 和 `web.TCPSite`；设置码存在时打印日志 `[glimpse] Phone web UI setup code: 123456`。
   - `async stop(self) -> None`
 - 路由按设计文档 7.6 实现。认证中间件：路径以 `/api/` 开头、且不在 `/api/auth/` 下的请求，都需要有效的 `xp_session` cookie，否则返回 401 `{"error": "auth required"}`。
 - `POST /api/auth/setup` 的请求体为 `{code, password}`，`/login` 为 `{password}`，`/password` 为 `{old, new}`。校验失败时先 `await asyncio.sleep(self.fail_delay)`（默认 1.0，测试中设为 0）再返回 403；处于暂停期时返回 429 `{"error": "locked", "seconds": n}`；密码过短返回 400。
@@ -330,7 +330,7 @@ async def test_lockout_returns_429(client, server):
 
 **Interfaces:**
 - Consumes: Task 4 的 `PhoneServer`。
-- Produces: `XavierPhone.phone_server: PhoneServer | None`；`async initialize(self) -> None`。
+- Produces: `Glimpse.phone_server: PhoneServer | None`；`async initialize(self) -> None`。
 
 - [ ] **Step 1: 写失败测试**
 

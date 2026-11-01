@@ -115,25 +115,25 @@
       "scenes_dir": {
         "description": "场景参考目录",
         "type": "string",
-        "hint": "一个子文件夹就是一个固定场景，文件夹名即场景名；图片名含“白天”或“夜晚”会按时间挑选。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/scenes（插件启动时自动创建）。",
+        "hint": "一个子文件夹就是一个固定场景，文件夹名即场景名；图片名含“白天”或“夜晚”会按时间挑选。留空则使用 data/plugin_data/astrbot_plugin_glimpse/scenes（插件启动时自动创建）。",
         "default": ""
       },
       "objects_dir": {
         "description": "物件 / 宠物参考目录",
         "type": "string",
-        "hint": "一个子文件夹一个物件，文件夹名就是名字（如 芝士、兔球球）。描述里写到这个名字就会带上它的第一张图。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/objects（插件启动时自动创建）。",
+        "hint": "一个子文件夹一个物件，文件夹名就是名字（如 芝士、兔球球）。描述里写到这个名字就会带上它的第一张图。留空则使用 data/plugin_data/astrbot_plugin_glimpse/objects（插件启动时自动创建）。",
         "default": ""
       },
       "outfits_dir": {
         "description": "服装参考目录",
         "type": "string",
-        "hint": "一个子文件夹一套衣服，命名为“类别-名称”，类别为 制服 / 便服 / 睡衣（如 便服-灰色卫衣）。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/outfits（插件启动时自动创建）。",
+        "hint": "一个子文件夹一套衣服，命名为“类别-名称”，类别为 制服 / 便服 / 睡衣（如 便服-灰色卫衣）。留空则使用 data/plugin_data/astrbot_plugin_glimpse/outfits（插件启动时自动创建）。",
         "default": ""
       },
       "hands_dir": {
         "description": "手部参考目录",
         "type": "string",
-        "hint": "直接放几张他手的图片即可，使用第一张。留空则使用 data/plugin_data/astrbot_plugin_xavier_phone/hands（插件启动时自动创建）。",
+        "hint": "直接放几张他手的图片即可，使用第一张。留空则使用 data/plugin_data/astrbot_plugin_glimpse/hands（插件启动时自动创建）。",
         "default": ""
       }
     }
@@ -190,7 +190,7 @@
   "guide_config": {
     "description": "使用说明",
     "type": "object",
-    "hint": "这一组会追加到聊天模型（沈星回）的 system prompt 末尾，他能看到，用来教他怎么使用标记。",
+    "hint": "这一组会追加到聊天模型（角色）的 system prompt 末尾，他能看到，用来教他怎么使用标记。",
     "items": {
       "enable_guide": {
         "description": "注入使用说明",
@@ -215,7 +215,7 @@
   "prompt_config": {
     "description": "提示词",
     "type": "object",
-    "hint": "标【生图模型】的只发给生图模型，标【看图模型】的只发给露脸检查用的看图模型，沈星回都看不到；标【聊天模型】的两句会填进使用说明里的 {hands}，他能看到。清空某一项则恢复内置版本。",
+    "hint": "标【生图模型】的只发给生图模型，标【看图模型】的只发给露脸检查用的看图模型，角色都看不到；标【聊天模型】的两句会填进使用说明里的 {hands}，他能看到。清空某一项则恢复内置版本。",
     "items": {
       "photo_template": {
         "description": "【生图模型】拍照模板（生活随拍）",

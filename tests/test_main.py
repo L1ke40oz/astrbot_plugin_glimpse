@@ -13,7 +13,7 @@ from astrbot.core.message.message_event_result import (
     MessageEventResult,
     ResultContentType,
 )
-from data.plugins.astrbot_plugin_xavier_phone import main
+from data.plugins.astrbot_plugin_glimpse import main
 
 SCHEMA = json.loads(
     (Path(main.__file__).parent / "_conf_schema.json").read_text(encoding="utf-8")
@@ -93,7 +93,7 @@ def make_plugin(tmp_path, monkeypatch, calls):
         config = {g: {} for g, v in SCHEMA.items() if v["type"] == "object"}
         for key, value in {**BASE_CONFIG, **overrides}.items():
             config[GROUP_OF[key]][key] = value
-        return main.XavierPhone(MagicMock(), config)
+        return main.Glimpse(MagicMock(), config)
 
     return make
 
@@ -271,7 +271,7 @@ async def test_incomplete_backup_skipped_and_backup_only_works(
 
 
 def test_schema_guide_default_matches_builtin():
-    from data.plugins.astrbot_plugin_xavier_phone.prompts import DEFAULT_GUIDE
+    from data.plugins.astrbot_plugin_glimpse.prompts import DEFAULT_GUIDE
 
     guide = SCHEMA["guide_config"]["items"]
     assert guide["guide_prompt"]["default"] == DEFAULT_GUIDE
@@ -509,7 +509,7 @@ async def test_override_write_failure_still_renders(make_plugin, make_event, tmp
 
 
 def test_schema_prompt_defaults_match_builtin():
-    from data.plugins.astrbot_plugin_xavier_phone.prompts import PROMPT_DEFAULTS
+    from data.plugins.astrbot_plugin_glimpse.prompts import PROMPT_DEFAULTS
 
     items = SCHEMA["prompt_config"]["items"]
     assert {k: v["default"] for k, v in items.items()} == PROMPT_DEFAULTS

@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from data.plugins.astrbot_plugin_xavier_phone.markers import parse_markers
-from data.plugins.astrbot_plugin_xavier_phone.prompts import (
+from data.plugins.astrbot_plugin_glimpse.markers import parse_markers
+from data.plugins.astrbot_plugin_glimpse.prompts import (
     DEFAULT_GUIDE,
     build_guide,
     build_prompt,

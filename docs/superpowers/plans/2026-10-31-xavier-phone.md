@@ -12,8 +12,8 @@
 
 ## Global Constraints
 
-- 插件目录：`D:\Software\AstrBot-master\data\plugins\astrbot_plugin_xavier_phone`，git 分支 `master`，远程 `origin`。下文路径都相对这个目录。
-- 测试命令都在 AstrBot 根目录执行：`uv run --no-sync python -m pytest data/plugins/astrbot_plugin_xavier_phone/tests -q`。测试用 `from data.plugins.astrbot_plugin_xavier_phone.<module> import ...` 导入；插件内部模块之间用相对导入。
+- 插件目录：`D:\Software\AstrBot-master\data\plugins\astrbot_plugin_glimpse`，git 分支 `master`，远程 `origin`。下文路径都相对这个目录。
+- 测试命令都在 AstrBot 根目录执行：`uv run --no-sync python -m pytest data/plugins/astrbot_plugin_glimpse/tests -q`。测试用 `from data.plugins.astrbot_plugin_glimpse.<module> import ...` 导入；插件内部模块之间用相对导入。
 - 异步测试使用 `@pytest.mark.asyncio`（AstrBot 未开启 auto 模式）。
 - `markers.py`、`scenes.py`、`prompts.py`、`album.py` 不得 import astrbot。
 - 用 `pathlib.Path`；注释和日志用英文；docstring 用 Google 风格；遵守 AGENTS.md 的 KISS 和“不加不必要的 helper”。
@@ -51,19 +51,19 @@
 - [ ] **Step 1: 写 metadata.yaml**
 
 ```yaml
-name: astrbot_plugin_xavier_phone
+name: astrbot_plugin_glimpse
 display_name: 沈星回的手机
 desc: 把沈星回聊天中的拍照、胶片、涂鸦标记变成真图。
 version: v0.1.0
 author: L1ke40oz
-repo: https://github.com/L1ke40oz/astrbot_plugin_xavier_phone
+repo: https://github.com/L1ke40oz/astrbot_plugin_glimpse
 astrbot_version: ">=4.16,<5"
 ```
 
 - [ ] **Step 2: 写失败测试 `tests/test_markers.py`**
 
 ```python
-from data.plugins.astrbot_plugin_xavier_phone.markers import fallback_text, parse_markers
+from data.plugins.astrbot_plugin_glimpse.markers import fallback_text, parse_markers
 
 def test_photo_with_scene():
     text = "刚回家$[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]$你看"
@@ -328,8 +328,8 @@ async def test_http_error_raises_without_key(fake_relay):   # relay returns 500 
 
 **Interfaces:**
 - Consumes: 前面所有任务的接口。
-- Produces: `class XavierPhone(Star)`
-  - `__init__(self, context: Context, config: AstrBotConfig)`：`self.data_dir = StarTools.get_data_dir("astrbot_plugin_xavier_phone")`；`self.album = Album(self.data_dir / "album")`；`scenes_dir` 为空时取 `self.data_dir / "scenes"`。
+- Produces: `class Glimpse(Star)`
+  - `__init__(self, context: Context, config: AstrBotConfig)`：`self.data_dir = StarTools.get_data_dir("astrbot_plugin_glimpse")`；`self.album = Album(self.data_dir / "album")`；`scenes_dir` 为空时取 `self.data_dir / "scenes"`。
   - `@filter.on_llm_request()` `async def inject_guide(self, event, req: ProviderRequest)`：`req.system_prompt += "\n\n" + build_guide(config["guide_prompt"] or DEFAULT_GUIDE, list_scenes(scenes_dir))`。
   - `@filter.on_decorating_result()` `async def render_markers(self, event: AstrMessageEvent)`
   - 模块常量 `MAX_MARKERS_PER_REPLY = 3`。
@@ -340,7 +340,7 @@ async def test_http_error_raises_without_key(fake_relay):   # relay returns 500 
 
 - [ ] **Step 2: 写失败测试 `tests/test_main.py`**
 
-构造方式：`XavierPhone(MagicMock(), config_dict)`，其中 `StarTools.get_data_dir` 用 monkeypatch 指向 `tmp_path`。用 monkeypatch 替换 `main.generate_image`，按描述返回 `b"IMG"`、抛异常或 `await asyncio.sleep(10)`。事件用一个简单的假对象，带 `get_result()` 和 `unified_msg_origin`；结果用 `MessageEventResult().message(text).set_result_content_type(ResultContentType.LLM_RESULT)`。
+构造方式：`Glimpse(MagicMock(), config_dict)`，其中 `StarTools.get_data_dir` 用 monkeypatch 指向 `tmp_path`。用 monkeypatch 替换 `main.generate_image`，按描述返回 `b"IMG"`、抛异常或 `await asyncio.sleep(10)`。事件用一个简单的假对象，带 `get_result()` 和 `unified_msg_origin`；结果用 `MessageEventResult().message(text).set_result_content_type(ResultContentType.LLM_RESULT)`。
 
 ```python
 @pytest.mark.asyncio

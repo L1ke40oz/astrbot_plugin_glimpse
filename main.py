@@ -31,7 +31,7 @@ from .scenes import (
     wardrobe,
 )
 
-PLUGIN_NAME = "astrbot_plugin_xavier_phone"
+PLUGIN_NAME = "astrbot_plugin_glimpse"
 MAX_MARKERS_PER_REPLY = 3
 NODE_KEYS = ("base_url", "api_key", "model")
 DEFAULT_GUARD_KEYWORDS = "自拍,镜子,镜中,对镜,合照,出镜,我的脸"
@@ -53,7 +53,7 @@ HAND_WORDS = (
 )
 
 
-class XavierPhone(Star):
+class Glimpse(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
         self.config = config
@@ -143,7 +143,7 @@ class XavierPhone(Star):
                             encoding="utf-8",
                         )
                     except OSError as exc:
-                        logger.warning(f"[xavier_phone] save outfit failed: {exc!r}")
+                        logger.warning(f"[glimpse] save outfit failed: {exc!r}")
             for start, end, _ in reversed(changes):
                 comp.text = comp.text[:start] + comp.text[end:]
         # A reply that was only a change marker must not become an empty message.
@@ -231,7 +231,7 @@ class XavierPhone(Star):
                 try:
                     data = prepare_reference(path.read_bytes(), ratio)
                 except Exception as exc:
-                    logger.warning(f"[xavier_phone] skip reference {path}: {exc!r}")
+                    logger.warning(f"[glimpse] skip reference {path}: {exc!r}")
                     continue
                 ref_images.append((f"{path.stem}.jpg", data))
                 labels.append((kind, name))
@@ -262,7 +262,7 @@ class XavierPhone(Star):
                     )
                     break
                 except Exception as exc:
-                    logger.warning(f"[xavier_phone] {model} failed: {exc!r}")
+                    logger.warning(f"[glimpse] {model} failed: {exc!r}")
                     error = exc
             else:
                 raise error
@@ -294,7 +294,7 @@ class XavierPhone(Star):
                         "是"
                     )
                 except Exception as exc:
-                    logger.warning(f"[xavier_phone] face check skipped: {exc!r}")
+                    logger.warning(f"[glimpse] face check skipped: {exc!r}")
                     has_face = False
                 finally:
                     check_path.unlink(missing_ok=True)
@@ -320,7 +320,7 @@ class XavierPhone(Star):
         for marker, outcome in zip(markers, outcomes):
             if isinstance(outcome, BaseException):
                 logger.warning(
-                    f"[xavier_phone] {marker.kind} generation failed: {outcome!r}"
+                    f"[glimpse] {marker.kind} generation failed: {outcome!r}"
                 )
             else:
                 paths[id(marker)] = outcome
