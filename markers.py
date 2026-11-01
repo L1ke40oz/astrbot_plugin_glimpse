@@ -1,15 +1,35 @@
-"""Parse camera / film / doodle markers out of Xavier's replies."""
+"""Parse camera / film / doodle markers out of the character's replies."""
 
 import re
 from dataclasses import dataclass
 
+# Separators the model may put between the kind and the scene: dots and
+# dashes from many Unicode blocks (e.g. ⋅ U+22C5, − U+2212), or plain spaces.
+DOTS = "·・⋅•‧∙･"
+DASHES = r"\-‐‑‒–—―−－~～"
 MARKER_RE = re.compile(
-    r"\[\s*(?:📷|🎞️|🎞|✏️|✏)?\s*(拍照|照片|胶片|涂鸦)\s*"
-    r"(?:[·・\-—]\s*([^:：\]]+?)\s*)?[:：]\s*([^\]]+?)\s*\]"
+    r"\[\s*(?:📷|🎞️|🎞|✏️|✏)?\s*(拍照|照片|胶片|涂鸦)"
+    rf"(?:(?:\s*[{DOTS}{DASHES}]+\s*|\s+)([^:：\]]+?)\s*)?\s*[:：]\s*([^\]]+?)\s*\]"
 )
+# Loose pattern used only to warn about markers the strict pattern rejects.
+LOOSE_MARKER_RE = re.compile(r"\[[^\[\]]{0,8}?(拍照|照片|胶片|涂鸦)[^\[\]]*\]")
 KIND_BY_WORD = {"拍照": "photo", "照片": "photo", "胶片": "film", "涂鸦": "doodle"}
 OUTFIT_RE = re.compile(r"\[\s*(?:👕)?\s*换装\s*[:：]\s*([^\]]+?)\s*\]")
-SCENE_SEPARATORS = re.compile(r"\s*[·・—–－]+\s*")
+SCENE_SEPARATORS = re.compile(rf"\s*[{DOTS}{DASHES}]+\s*")
+
+
+def looks_like_marker(text: str) -> bool:
+    """Return whether text contains something shaped like a marker.
+
+    Used for diagnostics when parse_markers finds nothing.
+
+    Args:
+        text: Reply text.
+
+    Returns:
+        True if a bracketed fragment mentions 拍照/照片/胶片/涂鸦.
+    """
+    return bool(LOOSE_MARKER_RE.search(text))
 
 
 def parse_outfit_changes(text: str) -> list[tuple[int, int, str]]:

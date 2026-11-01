@@ -1,4 +1,7 @@
+import pytest
+
 from data.plugins.astrbot_plugin_glimpse.markers import (
+    looks_like_marker,
     fallback_text,
     parse_markers,
     parse_outfit_changes,
@@ -62,3 +65,25 @@ def test_parse_outfit_changes():
 def test_chinese_dashes_in_scene():
     assert parse_markers("[📷拍照·公寓——客厅：猫]")[0].scene == "公寓-客厅"
     assert parse_markers("[📷拍照——公寓-客厅：猫]")[0].scene == "公寓-客厅"
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "[📷拍照⋅公寓−厨房：锅]",
+        "[📷拍照•公寓–厨房：锅]",
+        "[📷拍照・公寓－厨房：锅]",
+        "[📷拍照 公寓-厨房：锅]",
+        "[📷拍照‧公寓‐厨房：锅]",
+        "[📷拍照·公寓——厨房：锅]",
+    ],
+)
+def test_unusual_separators(text):
+    [m] = parse_markers(text)
+    assert (m.kind, m.scene, m.description) == ("photo", "公寓-厨房", "锅")
+
+
+def test_looks_like_marker():
+    assert looks_like_marker("[📷拍照/公寓：锅]")
+    assert not looks_like_marker("今天拍照了吗")
+    assert not looks_like_marker("[📷分享图片：猫]")
