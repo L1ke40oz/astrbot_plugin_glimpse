@@ -319,17 +319,20 @@ async def test_reference_priority_and_cap(make_plugin, make_event, calls, tmp_pa
 
 
 @pytest.mark.asyncio
-async def test_hands_only_when_described_and_enabled(make_plugin, make_event, calls, tmp_path):
+async def test_hands_only_when_described_and_enabled(
+    make_plugin, make_event, calls, tmp_path
+):
     write_lib(tmp_path / "outfits", ["便服-灰色卫衣"])
     (tmp_path / "hands").mkdir()
     (tmp_path / "hands" / "hand.jpg").write_bytes(png(800, 600))
     plugin = make_plugin(allow_hands=True)
     await plugin.render_markers(make_event("[📷拍照：我手里捏着糖炒栗子]"))
     prompt = calls[-1]["prompt"]
-    assert "his own hand" in prompt and "no hands" not in prompt
+    assert "his own hand" in prompt and "no hands," not in prompt
+    assert "便服-灰色卫衣" in prompt
     assert [n for n, _ in calls[-1]["refs"]] == ["1.jpg", "hand.jpg"]
     await plugin.render_markers(make_event("[📷拍照：手机屏幕亮了]"))
-    assert "no hands" in calls[-1]["prompt"] and calls[-1]["refs"] == []
+    assert "holding or touching" in calls[-1]["prompt"] and calls[-1]["refs"] == []
     await make_plugin().render_markers(make_event("[📷拍照：我手里捏着糖炒栗子]"))
     assert "no hands" in calls[-1]["prompt"]
 
@@ -363,14 +366,17 @@ async def test_bad_reference_skipped(make_plugin, make_event, calls, tmp_path):
         ("[📷拍照：我手中的咖啡]", True),
         ("[📷拍照：双手捧着热可可]", True),
         ("[📷拍照：卷起的袖子上沾了面粉]", True),
+        ("[📷拍照：手里拿着一张菜单]", True),
+        ("[📷拍照：端着一杯咖啡]", True),
         ("[📷拍照：一盒手指饼干]", False),
         ("[📷拍照：窗台上的袖珍盆栽]", False),
         ("[📷拍照：电视里选手上场了]", False),
     ],
 )
-async def test_hand_keywords(make_plugin, make_event, calls, text, hands):
+async def test_hand_keywords(make_plugin, make_event, calls, tmp_path, text, hands):
+    write_lib(tmp_path / "outfits", ["便服-灰色卫衣"])
     await make_plugin(allow_hands=True).render_markers(make_event(text))
-    assert ("his own hand" in calls[-1]["prompt"]) is hands
+    assert bool(calls[-1]["refs"]) is hands
 
 
 @pytest.mark.asyncio

@@ -21,25 +21,29 @@ PHOTO_TEMPLATE = (
     "textures, no text, no watermark, no borders."
 )
 FILM_TEMPLATE = (
-    "A photo taken with an old analog film camera by a young man who likes "
-    "old-fashioned things, shot from a first-person point of view; the photographer is never "
-    "visible: no human faces, no hair, no shoulders, no hands, no arms, no people in the foreground. "
-    "Genuine 35mm film look: visible film grain, slightly faded and warm colors, "
-    "soft highlights, a hint of light leak at one edge, gentle vignetting. "
-    "A real photograph, not a CG render, no cinematic lighting. Believable "
-    "perspective, no text, no watermark, no date stamp, no borders."
+    "A real photo from a scanned 35mm negative, shot on a cheap point-and-shoot "
+    "film camera by a young man who likes old-fashioned things. First-person point "
+    "of view; the photographer is never visible: no human faces, no hair, no "
+    "shoulders, no hands, no arms, no people in the foreground. Honest everyday "
+    "snapshot: natural film colors like Kodak Portra with true-to-life skin of the "
+    "world, slightly soft focus, fine organic grain, a little underexposed shadows, "
+    "sometimes the hard look of a direct on-camera flash. Neutral, believable "
+    "colors: no golden cast, no orange tint, no heavy warm filter, no oversaturation; "
+    "a light leak only rarely and very faint, never a bright orange stripe; not a "
+    "CG render, not a 3D render, not an illustration, no cinematic lighting, no HDR, no "
+    "text, no watermark, no date stamp, no borders."
 )
 DOODLE_TEMPLATE = (
-    "A quick digital drawing made with a stylus on a tablet, in the popular Chinese "
-    "'QQ ren' meme style: simple round-headed chibi figures, thick black brush "
-    "lines, minimal strokes, playful exaggerated expressions, a few flat color "
-    "accents at most. Plain white background with a very subtle paper texture, filling "
-    "the whole image edge to edge; it is the drawing file itself, not a photo of "
-    "paper: no desk, no shadows, no perspective, no pen, no hands. Looks like it was "
-    "doodled in under a minute. When the artist "
-    "draws himself, he is a round-headed little guy with a messy tuft of silver hair "
-    "and one small fang showing when he smiles. Cute and silly, no shading, no "
-    "realistic details, no text, no speech bubbles, no captions, no watermark."
+    "A quick doodle drawn by hand with a black ballpoint pen and a few colored "
+    "pencils on plain white paper, shown as a flat scan of the drawing itself, not "
+    "a photo of paper: no desk, no shadows, no perspective, no pen, no hands. "
+    "Wobbly, slightly clumsy ballpoint lines, simple round-headed chibi figures in "
+    "the casual Chinese 'QQ ren' doodle style, playful expressions, light uneven "
+    "colored-pencil strokes that do not fill every shape, lots of empty white space. "
+    "Drawn in under a minute, cute and silly; when the artist draws himself, he is "
+    "a round-headed little guy with a messy tuft of silver hair and one small fang "
+    "showing when he smiles. No shading, no hatching, no realistic details, no "
+    "digital effects, no text, no speech bubbles, no captions, no watermark."
 )
 DAY_LIGHT = "Lighting: daytime, soft natural daylight."
 NIGHT_LIGHT = (
@@ -47,10 +51,18 @@ NIGHT_LIGHT = (
     "dim and grainy like a real phone photo at night."
 )
 REFS_NOTE = (
-    "The reference images only show the layout and furniture of the same room; do "
-    "not copy their rendering style, recreate the room as a real-life phone photo. "
-    "Shoot a different angle or a close-up corner, do not copy the reference "
-    "composition."
+    "The scene reference images show the same room, its layout and furniture: keep "
+    "its architecture as it is, with the same walls, windows, doors and furniture "
+    "style; never add a window, "
+    "door or wall that the reference does not have. Any light the scene mentions "
+    "comes from light sources already in the room; do not copy their rendering "
+    "style, recreate the room as a real-life phone photo, from a different "
+    "angle or as a close-up corner, not the reference composition."
+)
+SUBJECT_NOTE = (
+    "Composition: the main subject is the first thing named in the scene; it is the "
+    "clear focus, placed near the center and filling a good part of the frame, while "
+    "the surroundings stay secondary and only hinted at."
 )
 
 # The earlier, more polished "cinematic" look, kept as an alternative style.
@@ -86,8 +98,13 @@ SEASONS = {
     11: "autumn",
 }
 HANDS_NOTE = (
-    "This overrides any earlier rule against showing hands: only his own hand, "
-    "forearm or sleeve may appear, and only as the scene describes; never his face or the rest of his body. His hands are realistic "
+    "This overrides any earlier rule against showing hands: where the scene has him "
+    "holding or touching something, show his own hand doing it naturally (the hand "
+    "and part of the forearm only); otherwise show no hands. Never his face or the "
+    "rest of his body. The forearm shows the sleeve or cuff of the outfit he is "
+    "wearing now, matching the outfit reference; if that outfit is short-sleeved or "
+    "the scene says the sleeve is rolled up, the forearm can be bare. A grown man's "
+    "hand, larger and broader than a woman's. His hands are realistic "
     "adult masculine hands: long slender fingers, clearly defined knuckles, a lean "
     "bony structure, subtle natural veins on the back of the hand, natural skin "
     "texture, short clean nails; no stubby or thick fingers, no exaggerated veins, "
@@ -99,7 +116,7 @@ FREE_PLACE_NOTE = (
 )
 REF_ROLES = {
     "object": "{name}, keep its exact appearance (shape, colors, markings).",
-    "outfit": "the clothes he is wearing today; any visible sleeve must match them.",
+    "outfit": "the clothes he is wearing now; the visible sleeve or cuff must match them.",
     "hand": "his hand; any visible hand must match it.",
     "scene": "the room or place, for layout only.",
 }
@@ -111,13 +128,13 @@ DEFAULT_GUIDE = """【手机功能：拍照与涂鸦】
 你的手机可以真的拍照片、发涂鸦。在回复里写下面的标记，系统会把它变成真实的图片，标记本身不会显示出来：
 - 拍照：[📷拍照：描述] 或 [📷拍照·场景名：描述]
 - 胶片相机（偶尔用，算小惊喜）：[🎞️胶片：描述] 或 [🎞️胶片·场景名：描述]
-- 随手涂鸦（QQ人风格的简笔画，画你自己的日常）：[✏️涂鸦：描述]
+- 随手涂鸦（圆珠笔加彩铅的QQ人简笔画，画你自己的日常）：[✏️涂鸦：描述]
 可用的固定场景：{scenes}。在这些地方拍照时写上场景名，写成“地点-区域”，如 公寓-客厅；在别处（出门、旅行、路上）不写场景名。
 可识别的物件和宠物：{objects}。描述里写到它们的名字，照片里就是它们本来的样子。
 你现在穿的是：{outfit}。想换衣服时在回复里写 [👕换装：衣服名]（她看不到这个标记），可换的有：{wardrobe}。日常衣服会按作息自动换；正装、泳装这类场合的衣服，到了对应的场合再自己换上。
 规则：
 - 只拍你看到的景色、小动物、物件。镜头里永远拍不到你：你的脸、头发、肩膀都不会入镜，{hands}自拍、对着镜子拍、你出现在画面里的照片（比如小猫爬上你的肩膀），一律用文字 [📷分享图片：描述]。
-- 描述用一两句平实的中文写清画面里有什么：主体、环境、光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]
+- 描述用一两句平实的中文，先写拍的是什么（主体），再简单带一点周围和光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。在固定场景里只写房间里本来就有的东西，不要额外编出窗户、门之类的。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]
 - 照片要符合你此刻在做的事、所在的地方和时间，不要凭空编一张不相干的照片。
 - 有分享欲时再发，没有就正常聊天，不必每轮都发，也不要为了发图打断重要的对话；一次回复最多一两张。"""
 
@@ -140,6 +157,7 @@ PROMPT_DEFAULTS = {
     "cinematic_refs_note": CINEMATIC_REFS_NOTE,
     "hands_note": HANDS_NOTE,
     "free_place_note": FREE_PLACE_NOTE,
+    "subject_note": SUBJECT_NOTE,
     "guide_hands_on": HANDS_ON,
     "guide_hands_off": HANDS_OFF,
     "face_check_prompt": FACE_CHECK_PROMPT,
@@ -168,6 +186,7 @@ def build_prompt(
     cinematic: bool = False,
     show_hands: bool = False,
     prompts: dict | None = None,
+    outfit: str = "",
 ) -> str:
     """Build the full image prompt for a marker.
 
@@ -180,6 +199,7 @@ def build_prompt(
             unedited phone-snapshot look.
         show_hands: Allow his own hand, forearm or sleeve in the picture.
         prompts: Prompt overrides from config; blank values use the built-ins.
+        outfit: Name of the outfit he is wearing now, mentioned with hands.
 
     Returns:
         The prompt sent to the image model.
@@ -199,12 +219,15 @@ def build_prompt(
     ]
     if show_hands:
         parts.append(t["hands_note"])
+        if outfit:
+            parts.append(f"He is wearing now: {outfit}.")
     for i, (kind, name) in enumerate(refs, 1):
         parts.append(f"Reference image {i}: " + REF_ROLES[kind].format(name=name))
     if any(kind == "scene" for kind, _ in refs):
         parts.append(t["cinematic_refs_note" if cinematic else "refs_note"])
     else:
         parts.append(t["free_place_note"])
+    parts.append(t["subject_note"])
     parts.append(f"Scene: {marker.description}")
     return "\n".join(parts)
 

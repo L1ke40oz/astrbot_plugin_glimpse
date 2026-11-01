@@ -30,9 +30,9 @@ def test_film_prompt():
 
 def test_doodle_prompt():
     p = build_prompt(parse_markers("[✏️涂鸦：钓鱼]")[0], [], DAY)
-    for phrase in ("doodle", "thick black", "white background", "silver", "fang", "no text"):
+    for phrase in ("doodle", "ballpoint", "colored pencil", "white paper", "silver", "fang", "no text"):
         assert phrase in p
-    assert "smartphone" not in p
+    assert "smartphone" not in p and "main subject" not in p
 
 
 def test_guide():
@@ -93,14 +93,15 @@ def test_reference_labels_in_order():
 
 def test_show_hands_relaxes_rule_but_never_face():
     m = parse_markers("[📷拍照：我手里捏着糖炒栗子]")[0]
-    p = build_prompt(m, [], DAY, show_hands=True)
-    assert "no hands" not in p and "no human faces" in p and "his own hand" in p
+    p = build_prompt(m, [], DAY, show_hands=True, outfit="睡衣-条纹")
+    assert "no hands," not in p and "no human faces" in p and "his own hand" in p
+    assert "holding or touching" in p and "睡衣-条纹" in p and "short-sleeved" in p
     assert "no hands" in build_prompt(m, [], DAY)
 
 
-def test_doodle_is_digital_with_paper_texture():
+def test_doodle_is_flat_scan_not_photo():
     p = build_prompt(parse_markers("[✏️涂鸦：钓鱼]")[0], [], DAY)
-    for phrase in ("digital drawing", "subtle paper texture", "not a photo of paper"):
+    for phrase in ("flat scan", "not a photo of paper", "lots of empty white space"):
         assert phrase in p
 
 
@@ -158,3 +159,25 @@ def test_prompt_overrides_and_blank_fallback():
 def test_hands_note_overrides_template_rule():
     p = build_prompt(parse_markers("[📷拍照：我手里的咖啡]")[0], [], DAY, show_hands=True)
     assert "overrides any earlier" in p
+
+
+def test_film_looks_like_real_negative():
+    p = build_prompt(parse_markers("[🎞️胶片：街道]")[0], [], DAY)
+    assert "scanned 35mm negative" in p and "no golden cast" in p
+    assert "light leak at one edge" not in p and "not a CG render" in p
+
+
+def test_main_subject_is_focus():
+    for text in ("[📷拍照：猫]", "[🎞️胶片：猫]"):
+        assert "main subject" in build_prompt(parse_markers(text)[0], [], DAY)
+
+
+def test_scene_refs_lock_architecture():
+    refs = [("scene", "公寓-厨房")]
+    p = build_prompt(parse_markers("[📷拍照·公寓-厨房：猫]")[0], refs, DAY)
+    assert "never add a window" in p
+
+
+def test_guide_asks_subject_first():
+    g = build_guide(DEFAULT_GUIDE, [], [], "", False)
+    assert "先写拍的是什么" in g and "不要额外编" in g

@@ -36,14 +36,22 @@ MAX_MARKERS_PER_REPLY = 3
 NODE_KEYS = ("base_url", "api_key", "model")
 DEFAULT_GUARD_KEYWORDS = "自拍,镜子,镜中,对镜,合照,出镜,我的脸"
 DEFAULT_RATIOS = {"photo": "3:4", "film": "3:2", "doodle": "1:1"}
-# Words meaning his own hand or sleeve; a bare "手" would also match "手机".
+# Words meaning his hand is in the shot (holding or touching something); a
+# bare "手" would also match "手机", and "手指" would match "手指饼干".
 HAND_WORDS = (
     "我的手",
-    "我手里",
+    "手里",
     "我手上",
-    "我手中",
-    "手中的",
+    "手中",
     "双手",
+    "拿着",
+    "捏着",
+    "握着",
+    "端着",
+    "捧着",
+    "举着",
+    "摸着",
+    "牵着",
     "指尖",
     "掌心",
     "袖子",
@@ -196,17 +204,19 @@ class Glimpse(Star):
             # then the scene with whatever slots are left.
             max_refs = int(photo_cfg.get("max_reference_images", 4))
             refs: list[tuple[str, str, Path]] = []
-            show_hands = False
+            # With hands allowed, the image model may draw his hand whenever the
+            # scene has him holding or touching something; the outfit and hand
+            # references are only sent when the description clearly says so.
+            show_hands = marker.kind != "doodle" and bool(
+                photo_cfg.get("allow_hands", False)
+            )
+            outfit = self._current_outfit(now) if show_hands else ""
             if marker.kind != "doodle":
                 for name in match_objects(self.dirs["objects"], marker.description):
                     refs.append(
                         ("object", name, first_image(self.dirs["objects"], name))
                     )
-                show_hands = bool(photo_cfg.get("allow_hands", False)) and any(
-                    w in marker.description for w in HAND_WORDS
-                )
-                if show_hands:
-                    outfit = self._current_outfit(now)
+                if show_hands and any(w in marker.description for w in HAND_WORDS):
                     outfit_image = first_image(self.dirs["outfits"], outfit)
                     if outfit_image:
                         refs.append(("outfit", outfit, outfit_image))
@@ -243,6 +253,7 @@ class Glimpse(Star):
                 cinematic,
                 show_hands,
                 self.config.get("prompt_config"),
+                outfit,
             )
             # Each node gets its own timeout; the last error is raised if all fail.
             error: BaseException = RuntimeError("no image provider")

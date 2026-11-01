@@ -202,7 +202,7 @@
         "description": "【聊天模型】注入给他的使用说明",
         "type": "text",
         "hint": "每次对话追加到 system prompt 末尾的完整内容，可以自由修改。占位符：{scenes} 场景名（按地点合并）、{objects} 物件名、{outfit} 当前衣服、{wardrobe} 当前可换的衣服、{hands} 露手规则；清空则恢复内置版本。 插件更新提示词后，已保存的旧内容不会自动更新，清空即可换成新版。",
-        "default": "【手机功能：拍照与涂鸦】\n你有自己的生活，也有分享欲：看到窗外的天、路边的猫、刚做好的饭、正在忙的事，会想让她知道你在做什么、给她看看。就像恋人之间随手报备一样，在自然的时候拍一张发给她。\n你的手机可以真的拍照片、发涂鸦。在回复里写下面的标记，系统会把它变成真实的图片，标记本身不会显示出来：\n- 拍照：[📷拍照：描述] 或 [📷拍照·场景名：描述]\n- 胶片相机（偶尔用，算小惊喜）：[🎞️胶片：描述] 或 [🎞️胶片·场景名：描述]\n- 随手涂鸦（QQ人风格的简笔画，画你自己的日常）：[✏️涂鸦：描述]\n可用的固定场景：{scenes}。在这些地方拍照时写上场景名，写成“地点-区域”，如 公寓-客厅；在别处（出门、旅行、路上）不写场景名。\n可识别的物件和宠物：{objects}。描述里写到它们的名字，照片里就是它们本来的样子。\n你现在穿的是：{outfit}。想换衣服时在回复里写 [👕换装：衣服名]（她看不到这个标记），可换的有：{wardrobe}。日常衣服会按作息自动换；正装、泳装这类场合的衣服，到了对应的场合再自己换上。\n规则：\n- 只拍你看到的景色、小动物、物件。镜头里永远拍不到你：你的脸、头发、肩膀都不会入镜，{hands}自拍、对着镜子拍、你出现在画面里的照片（比如小猫爬上你的肩膀），一律用文字 [📷分享图片：描述]。\n- 描述用一两句平实的中文写清画面里有什么：主体、环境、光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]\n- 照片要符合你此刻在做的事、所在的地方和时间，不要凭空编一张不相干的照片。\n- 有分享欲时再发，没有就正常聊天，不必每轮都发，也不要为了发图打断重要的对话；一次回复最多一两张。"
+        "default": "【手机功能：拍照与涂鸦】\n你有自己的生活，也有分享欲：看到窗外的天、路边的猫、刚做好的饭、正在忙的事，会想让她知道你在做什么、给她看看。就像恋人之间随手报备一样，在自然的时候拍一张发给她。\n你的手机可以真的拍照片、发涂鸦。在回复里写下面的标记，系统会把它变成真实的图片，标记本身不会显示出来：\n- 拍照：[📷拍照：描述] 或 [📷拍照·场景名：描述]\n- 胶片相机（偶尔用，算小惊喜）：[🎞️胶片：描述] 或 [🎞️胶片·场景名：描述]\n- 随手涂鸦（圆珠笔加彩铅的QQ人简笔画，画你自己的日常）：[✏️涂鸦：描述]\n可用的固定场景：{scenes}。在这些地方拍照时写上场景名，写成“地点-区域”，如 公寓-客厅；在别处（出门、旅行、路上）不写场景名。\n可识别的物件和宠物：{objects}。描述里写到它们的名字，照片里就是它们本来的样子。\n你现在穿的是：{outfit}。想换衣服时在回复里写 [👕换装：衣服名]（她看不到这个标记），可换的有：{wardrobe}。日常衣服会按作息自动换；正装、泳装这类场合的衣服，到了对应的场合再自己换上。\n规则：\n- 只拍你看到的景色、小动物、物件。镜头里永远拍不到你：你的脸、头发、肩膀都不会入镜，{hands}自拍、对着镜子拍、你出现在画面里的照片（比如小猫爬上你的肩膀），一律用文字 [📷分享图片：描述]。\n- 描述用一两句平实的中文，先写拍的是什么（主体），再简单带一点周围和光线，像跟朋友说“拍了个啥”，不要文学化的修饰和形容。在固定场景里只写房间里本来就有的东西，不要额外编出窗户、门之类的。例：[📷拍照·公寓-露台：吊椅上睡着一只橘猫，星星灯刚亮]\n- 照片要符合你此刻在做的事、所在的地方和时间，不要凭空编一张不相干的照片。\n- 有分享欲时再发，没有就正常聊天，不必每轮都发，也不要为了发图打断重要的对话；一次回复最多一两张。"
       }
     }
   },
@@ -227,13 +227,13 @@
         "description": "【生图模型】胶片模板",
         "type": "text",
         "hint": "胶片照片的基础描述。 清空则恢复内置版本。",
-        "default": "A photo taken with an old analog film camera by a young man who likes old-fashioned things, shot from a first-person point of view; the photographer is never visible: no human faces, no hair, no shoulders, no hands, no arms, no people in the foreground. Genuine 35mm film look: visible film grain, slightly faded and warm colors, soft highlights, a hint of light leak at one edge, gentle vignetting. A real photograph, not a CG render, no cinematic lighting. Believable perspective, no text, no watermark, no date stamp, no borders."
+        "default": "A real photo from a scanned 35mm negative, shot on a cheap point-and-shoot film camera by a young man who likes old-fashioned things. First-person point of view; the photographer is never visible: no human faces, no hair, no shoulders, no hands, no arms, no people in the foreground. Honest everyday snapshot: natural film colors like Kodak Portra with true-to-life skin of the world, slightly soft focus, fine organic grain, a little underexposed shadows, sometimes the hard look of a direct on-camera flash. Neutral, believable colors: no golden cast, no orange tint, no heavy warm filter, no oversaturation; a light leak only rarely and very faint, never a bright orange stripe; not a CG render, not a 3D render, not an illustration, no cinematic lighting, no HDR, no text, no watermark, no date stamp, no borders."
       },
       "doodle_template": {
         "description": "【生图模型】涂鸦模板",
         "type": "text",
         "hint": "涂鸦的基础描述，他写的内容会接在后面。 清空则恢复内置版本。",
-        "default": "A quick digital drawing made with a stylus on a tablet, in the popular Chinese 'QQ ren' meme style: simple round-headed chibi figures, thick black brush lines, minimal strokes, playful exaggerated expressions, a few flat color accents at most. Plain white background with a very subtle paper texture, filling the whole image edge to edge; it is the drawing file itself, not a photo of paper: no desk, no shadows, no perspective, no pen, no hands. Looks like it was doodled in under a minute. When the artist draws himself, he is a round-headed little guy with a messy tuft of silver hair and one small fang showing when he smiles. Cute and silly, no shading, no realistic details, no text, no speech bubbles, no captions, no watermark."
+        "default": "A quick doodle drawn by hand with a black ballpoint pen and a few colored pencils on plain white paper, shown as a flat scan of the drawing itself, not a photo of paper: no desk, no shadows, no perspective, no pen, no hands. Wobbly, slightly clumsy ballpoint lines, simple round-headed chibi figures in the casual Chinese 'QQ ren' doodle style, playful expressions, light uneven colored-pencil strokes that do not fill every shape, lots of empty white space. Drawn in under a minute, cute and silly; when the artist draws himself, he is a round-headed little guy with a messy tuft of silver hair and one small fang showing when he smiles. No shading, no hatching, no realistic details, no digital effects, no text, no speech bubbles, no captions, no watermark."
       },
       "cinematic_photo_template": {
         "description": "【生图模型】拍照模板（氛围大片）",
@@ -263,7 +263,7 @@
         "description": "【生图模型】场景参考图说明",
         "type": "text",
         "hint": "带场景参考图时追加（生活随拍）。 清空则恢复内置版本。",
-        "default": "The reference images only show the layout and furniture of the same room; do not copy their rendering style, recreate the room as a real-life phone photo. Shoot a different angle or a close-up corner, do not copy the reference composition."
+        "default": "The scene reference images show the same room, its layout and furniture: keep its architecture as it is, with the same walls, windows, doors and furniture style; never add a window, door or wall that the reference does not have. Any light the scene mentions comes from light sources already in the room; do not copy their rendering style, recreate the room as a real-life phone photo, from a different angle or as a close-up corner, not the reference composition."
       },
       "cinematic_refs_note": {
         "description": "【生图模型】场景参考图说明（氛围大片）",
@@ -275,13 +275,19 @@
         "description": "【生图模型】露手说明",
         "type": "text",
         "hint": "允许露手且他写到自己的手时追加，包含手部外观描写。 清空则恢复内置版本。",
-        "default": "This overrides any earlier rule against showing hands: only his own hand, forearm or sleeve may appear, and only as the scene describes; never his face or the rest of his body. His hands are realistic adult masculine hands: long slender fingers, clearly defined knuckles, a lean bony structure, subtle natural veins on the back of the hand, natural skin texture, short clean nails; no stubby or thick fingers, no exaggerated veins, no long nails, no plastic-looking skin."
+        "default": "This overrides any earlier rule against showing hands: where the scene has him holding or touching something, show his own hand doing it naturally (the hand and part of the forearm only); otherwise show no hands. Never his face or the rest of his body. The forearm shows the sleeve or cuff of the outfit he is wearing now, matching the outfit reference; if that outfit is short-sleeved or the scene says the sleeve is rolled up, the forearm can be bare. A grown man's hand, larger and broader than a woman's. His hands are realistic adult masculine hands: long slender fingers, clearly defined knuckles, a lean bony structure, subtle natural veins on the back of the hand, natural skin texture, short clean nails; no stubby or thick fingers, no exaggerated veins, no long nails, no plastic-looking skin."
       },
       "free_place_note": {
         "description": "【生图模型】地点说明",
         "type": "text",
         "hint": "没有场景参考图时追加，避免画成欧洲街景。 清空则恢复内置版本。",
         "default": "Unless the scene names a specific real place, it is set in a modern East Asian city, not in Europe."
+      },
+      "subject_note": {
+        "description": "【生图模型】主体构图说明",
+        "type": "text",
+        "hint": "拍照和胶片都会追加：描述里第一个提到的东西是主体，放在画面中心附近。清空则恢复内置版本。",
+        "default": "Composition: the main subject is the first thing named in the scene; it is the clear focus, placed near the center and filling a good part of the frame, while the surroundings stay secondary and only hinted at."
       },
       "guide_hands_on": {
         "description": "【聊天模型】使用说明·露手开启时",
