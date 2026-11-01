@@ -72,7 +72,7 @@
           "生活随拍",
           "氛围大片"
         ],
-        "hint": "生活随拍：像没修过的手机原图，有噪点和小杂乱；氛围大片：更精致、光线更漂亮。对拍照和胶片生效。",
+        "hint": "生活随拍：像没修过的手机原图，明亮清楚、颜色中性；氛围大片：提示词更短，保留灯光原本的暖色，更有情绪和氛围。对拍照生效。",
         "default": "生活随拍"
       },
       "photo_ratio": {
@@ -239,7 +239,7 @@
         "description": "【生图模型】拍照模板（氛围大片）",
         "type": "text",
         "hint": "照片画风选「氛围大片」时使用。 清空则恢复内置版本。",
-        "default": "A casual photo taken on a smartphone by a young man and sent to his girlfriend in a chat, shot from a first-person point of view: he is holding the phone and shooting what he sees, so the photographer is never visible: no human faces, no hair, no shoulders, no hands, no arms, no feet, no people in the foreground. Authentic everyday snapshot, natural framing that is slightly imperfect, realistic depth of field, believable scale and perspective, natural light with no heavy retouching, no HDR look, no plastic textures, no text, no watermark, no borders."
+        "default": "A casual smartphone photo, like someone just took a quick snapshot of a small moment at home to send to his girlfriend. Natural phone camera quality, an ordinary everyday look, nothing staged or polished. It is shot from his own point of view, so he is not in the picture: no human faces, no hair, no shoulders, no hands, no arms, no feet, no people in the foreground."
       },
       "day_light": {
         "description": "【生图模型】白天光线",
@@ -257,7 +257,7 @@
         "description": "【生图模型】夜晚光线（氛围大片）",
         "type": "text",
         "hint": "清空则恢复内置版本。",
-        "default": "Lighting: night, warm indoor lamps or city lights, natural low-light look."
+        "default": "Lighting: night; the room is lit only by warm, dim indoor lamps."
       },
       "refs_note": {
         "description": "【生图模型】场景参考图说明",

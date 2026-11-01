@@ -60,7 +60,8 @@ def test_refs_only_for_layout():
 def test_cinematic_style_uses_previous_look():
     m = parse_markers("[📷拍照·公寓-客厅：猫]")[0]
     p = build_prompt(m, [("scene", "公寓-客厅")], NIGHT, cinematic=True)
-    assert "Authentic everyday snapshot" in p and "warm indoor lamps" in p
+    assert "quick snapshot of a small moment" in p and "warm, dim indoor lamps" in p
+    assert "neutral white balance" not in p
     assert "unedited" not in p and "do not copy their rendering style" not in p
     assert "no human faces" in p and "same room" in p
 

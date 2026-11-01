@@ -224,7 +224,7 @@ BACKUP = {"base_url": "https://backup.test/v1", "api_key": "k2", "model": "m2"}
 @pytest.mark.asyncio
 async def test_photo_style_option(make_plugin, make_event, calls):
     await make_plugin(photo_style="氛围大片").render_markers(make_event("[📷拍照：猫]"))
-    assert "Authentic everyday snapshot" in calls[-1]["prompt"]
+    assert "quick snapshot of a small moment" in calls[-1]["prompt"]
     await make_plugin().render_markers(make_event("[📷拍照：猫]"))
     assert "unedited" in calls[-1]["prompt"]
 

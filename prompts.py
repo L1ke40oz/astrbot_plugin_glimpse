@@ -65,18 +65,16 @@ SUBJECT_NOTE = (
     "the surroundings stay secondary and only hinted at."
 )
 
-# The earlier, more polished "cinematic" look, kept as an alternative style.
+# The "氛围大片" style: a short, mood-first prompt that keeps lamp light warm.
 CINEMATIC_PHOTO_TEMPLATE = (
-    "A casual photo taken on a smartphone by a young man and sent to his girlfriend "
-    "in a chat, shot from a first-person point of view: he is holding the phone and "
-    "shooting what he sees, so the photographer is never visible: no human faces, no "
-    "hair, no shoulders, no hands, no arms, no feet, no people in the foreground. Authentic everyday "
-    "snapshot, natural framing that is slightly imperfect, realistic depth of field, "
-    "believable scale and perspective, natural light with no heavy retouching, no HDR "
-    "look, no plastic textures, no text, no watermark, no borders."
+    "A casual smartphone photo, like someone just took a quick snapshot of a small "
+    "moment at home to send to his girlfriend. Natural phone camera quality, an "
+    "ordinary everyday look, nothing staged or polished. It is shot from his own "
+    "point of view, so he is not in the picture: no human faces, no hair, no "
+    "shoulders, no hands, no arms, no feet, no people in the foreground."
 )
 CINEMATIC_NIGHT_LIGHT = (
-    "Lighting: night, warm indoor lamps or city lights, natural low-light look."
+    "Lighting: night; the room is lit only by warm, dim indoor lamps."
 )
 CINEMATIC_REFS_NOTE = (
     "The reference images show the same room; shoot a different angle or a close-up "
